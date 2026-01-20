@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happ Admin Panel</title>
+    <title>Gojo Fun Hub</title>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <style>
@@ -13,230 +13,180 @@
         
         body {
             min-height: 100vh;
-            background-image: url('gojo.jpg');
+            background-image: url('gojo.jpg'); /* Senin resmin */
             background-size: cover; background-position: center; background-attachment: fixed;
             background-color: #0f2027;
-            display: flex;
-            color: white;
-            overflow-x: hidden;
+            display: flex; color: white; overflow: hidden;
         }
 
-        /* --- MARZBAN STİLİ YAN MENÜ --- */
+        /* --- YAN MENÜ --- */
         .sidebar {
             width: 80px; height: 100vh;
-            background: rgba(15, 23, 42, 0.8); /* Daha koyu, Marzban mavisi */
-            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px);
             border-right: 1px solid rgba(255,255,255,0.1);
             display: flex; flex-direction: column; align-items: center; padding-top: 20px;
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 100; position: fixed;
+            z-index: 100; transition: .3s;
         }
-        .sidebar:hover { width: 260px; align-items: flex-start; padding-left: 20px; }
-        
-        .sidebar .logo { 
-            font-size: 1.8em; font-weight: 700; margin-bottom: 40px; color: #3b82f6; 
-            display: flex; align-items: center; gap: 10px; white-space: nowrap;
-        }
-        .sidebar:hover .logo::after { content: 'Happ Admin'; color: #fff; font-size: 0.8em; margin-left: 10px; }
+        .sidebar:hover { width: 220px; align-items: flex-start; padding-left: 20px; }
         
         .menu-item {
-            width: 90%; padding: 12px 15px; margin-bottom: 5px;
-            display: flex; align-items: center; border-radius: 10px;
-            cursor: pointer; transition: .2s; text-decoration: none; color: #94a3b8;
+            width: 90%; padding: 15px; margin-bottom: 10px;
+            display: flex; align-items: center; border-radius: 12px;
+            cursor: pointer; transition: .2s; color: #ccc;
         }
-        .menu-item:hover, .menu-item.active { background: #3b82f6; color: white; }
-        
-        .menu-item ion-icon { font-size: 1.6em; min-width: 30px; }
-        .menu-text { margin-left: 15px; font-size: 1em; opacity: 0; transition: .2s; white-space: nowrap; }
+        .menu-item:hover, .menu-item.active { background: #fff; color: #000; }
+        .menu-item ion-icon { font-size: 1.8em; min-width: 30px; }
+        .menu-text { margin-left: 15px; opacity: 0; transition: .2s; white-space: nowrap; font-weight: 600; }
         .sidebar:hover .menu-text { opacity: 1; }
 
-        .logout-btn { margin-top: auto; margin-bottom: 20px; color: #ef4444; }
-        .logout-btn:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-
-        /* --- ANA İÇERİK --- */
-        .main-content {
-            margin-left: 80px; flex: 1; padding: 30px; width: calc(100% - 80px);
-            transition: margin-left 0.3s;
-        }
+        /* --- İÇERİK ALANI --- */
+        .content-area { flex: 1; position: relative; overflow: hidden; }
         
-        /* --- SİSTEM KAYNAKLARI (CPU/RAM) --- */
-        .system-status {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;
-            margin-bottom: 30px;
+        .section {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 40px; display: none; opacity: 0; transition: .5s;
+            overflow-y: auto;
         }
-        .status-card {
-            background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1);
-            padding: 20px; border-radius: 15px; backdrop-filter: blur(10px);
-        }
-        .status-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9em; color: #cbd5e1; }
-        
-        .progress-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 5px; transition: width 1s ease; }
-        .cpu-fill { background: linear-gradient(90deg, #3b82f6, #60a5fa); width: 45%; }
-        .ram-fill { background: linear-gradient(90deg, #10b981, #34d399); width: 62%; }
-        .disk-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); width: 28%; }
+        .section.active { display: block; opacity: 1; animation: fadeIn 0.5s forwards; }
 
-        /* --- İSTATİSTİK KARTLARI --- */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1);
-            padding: 20px; border-radius: 15px; backdrop-filter: blur(10px);
-            display: flex; align-items: center; gap: 20px;
-        }
-        .icon-box {
-            width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5em;
-        }
-        .stat-info h3 { font-size: 0.9em; color: #94a3b8; font-weight: 500; }
-        .stat-info h2 { font-size: 1.5em; font-weight: 700; color: white; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- KULLANICI TABLOSU --- */
-        .table-container {
-            background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px; backdrop-filter: blur(10px); padding: 20px; overflow-x: auto;
+        /* --- 1. SİNEMA MODU (NETFLIX STYLE) --- */
+        .movie-hero {
+            width: 100%; height: 300px; border-radius: 20px;
+            background: linear-gradient(to top, #000, transparent), url('https://wallpapers.com/images/hd/jujutsu-kaisen-pc-4k-j8w4i7i8w4i7i8w4.jpg');
+            background-size: cover; background-position: center;
+            display: flex; align-items: flex-end; padding: 30px; margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { text-align: left; padding: 15px; color: #94a3b8; font-weight: 500; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #e2e8f0; }
-        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8em; font-weight: 600; }
-        .active-badge { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        .expired-badge { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        .movie-scroll { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; }
+        .movie-card {
+            min-width: 160px; height: 240px; border-radius: 12px;
+            background: #333; position: relative; overflow: hidden; cursor: pointer;
+            transition: .3s; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .movie-card:hover { transform: scale(1.05); border-color: #fff; z-index: 10; }
+        .movie-card img { width: 100%; height: 100%; object-fit: cover; }
+        .movie-info {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 10px; font-size: 0.9em;
+        }
 
-        /* MOBİL UYUM */
+        /* --- 2. OYUN MODU (REFLEKS) --- */
+        .game-container {
+            width: 100%; height: 80%; background: rgba(255,255,255,0.05);
+            border-radius: 20px; position: relative; border: 2px dashed rgba(255,255,255,0.2);
+            overflow: hidden; cursor: crosshair;
+        }
+        .target {
+            width: 50px; height: 50px; background: #fff; border-radius: 50%;
+            position: absolute; box-shadow: 0 0 15px #fff;
+            animation: pulse 1s infinite; cursor: pointer;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .score-board { font-size: 2em; font-weight: 700; margin-bottom: 20px; display: flex; justify-content: space-between; }
+
+        /* --- 3. CHAT MODU --- */
+        .chat-box {
+            width: 100%; height: 80%; background: rgba(0,0,0,0.5);
+            border-radius: 20px; display: flex; flex-direction: column; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 10px 15px; border-radius: 10px; max-width: 70%; font-size: 0.9em; }
+        .msg.bot { background: #fff; color: #000; align-self: flex-start; border-bottom-left-radius: 0; }
+        .msg.user { background: #3b82f6; color: #fff; align-self: flex-end; border-bottom-right-radius: 0; }
+        .input-area { padding: 15px; background: rgba(255,255,255,0.1); display: flex; gap: 10px; }
+        .input-area input { flex: 1; background: transparent; border: none; color: #fff; outline: none; }
+        .input-area button { padding: 8px 15px; background: #3b82f6; border: none; color: #fff; border-radius: 5px; cursor: pointer; }
+
+        /* MOBİL */
         @media (max-width: 768px) {
-            .sidebar { 
-                width: 100%; height: 60px; bottom: 0; top: auto; flex-direction: row; 
-                justify-content: space-around; padding: 0; position: fixed;
-            }
-            .sidebar:hover { width: 100%; padding-left: 0; }
-            .main-content { margin-left: 0; padding-bottom: 80px; width: 100%; }
-            .logo, .menu-text { display: none; }
-            .menu-item { width: auto; justify-content: center; padding: 10px; }
-            .menu-item:hover { background: transparent; color: #3b82f6; }
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: 60px; bottom: 0; flex-direction: row; justify-content: space-around; position: fixed; padding: 0; }
+            .sidebar:hover { width: 100%; padding: 0; }
+            .menu-text { display: none; }
+            .section { padding: 20px 20px 80px 20px; }
+            .movie-hero { height: 200px; }
         }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <div class="logo"><ion-icon name="cube"></ion-icon></div>
+        <div style="margin-bottom: 30px; margin-top: 10px; font-weight: 900; font-size: 1.5em; color: #fff;">G</div>
         
-        <a href="#" class="menu-item active">
-            <ion-icon name="grid-outline"></ion-icon>
-            <span class="menu-text">Panel</span>
-        </a>
-        <a href="#" class="menu-item">
-            <ion-icon name="people-outline"></ion-icon>
-            <span class="menu-text">Kullanıcılar</span>
-        </a>
-        <a href="#" class="menu-item">
-            <ion-icon name="server-outline"></ion-icon>
-            <span class="menu-text">Düğümler</span>
-        </a>
-        <a href="#" class="menu-item">
-            <ion-icon name="settings-outline"></ion-icon>
-            <span class="menu-text">Ayarlar</span>
-        </a>
-
-        <a href="#" class="menu-item logout-btn" id="logoutBtn">
+        <div class="menu-item active" onclick="switchTab('movies')">
+            <ion-icon name="film-outline"></ion-icon>
+            <span class="menu-text">Sinema</span>
+        </div>
+        <div class="menu-item" onclick="switchTab('games')">
+            <ion-icon name="game-controller-outline"></ion-icon>
+            <span class="menu-text">Oyun</span>
+        </div>
+        <div class="menu-item" onclick="switchTab('chat')">
+            <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+            <span class="menu-text">Chat</span>
+        </div>
+        <div class="menu-item" id="logoutBtn" style="margin-top: auto; color: #ff4757;">
             <ion-icon name="log-out-outline"></ion-icon>
             <span class="menu-text">Çıkış</span>
-        </a>
+        </div>
     </nav>
 
-    <div class="main-content">
-        <div style="margin-bottom: 25px;">
-            <h1 style="font-size: 1.8em;">Happ Admin</h1>
-            <p style="color: #94a3b8;">Sistem Stabil • Uptime: 14 Gün 2 Saat</p>
-        </div>
+    <div class="content-area">
 
-        <div class="system-status">
-            <div class="status-card">
-                <div class="status-header"><span>CPU Kullanımı</span><span>45%</span></div>
-                <div class="progress-bg"><div class="progress-fill cpu-fill"></div></div>
-            </div>
-            <div class="status-card">
-                <div class="status-header"><span>RAM Kullanımı</span><span>62%</span></div>
-                <div class="progress-bg"><div class="progress-fill ram-fill"></div></div>
-            </div>
-            <div class="status-card">
-                <div class="status-header"><span>Disk Alanı</span><span>28%</span></div>
-                <div class="progress-bg"><div class="progress-fill disk-fill"></div></div>
-            </div>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="icon-box" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">
-                    <ion-icon name="people"></ion-icon>
+        <div id="movies" class="section active">
+            <div class="movie-hero">
+                <div>
+                    <h1 style="font-size: 3em; font-weight: 800; text-shadow: 0 0 20px black;">JUJUTSU KAISEN 0</h1>
+                    <p>Lanetlerin kraliçesi Rika ve Yuta'nın hikayesi.</p>
+                    <button style="margin-top: 10px; padding: 10px 20px; background: #fff; border:none; border-radius: 5px; font-weight: 700; cursor: pointer;">İzle</button>
                 </div>
-                <div class="stat-info"><h3>Toplam Kullanıcı</h3><h2>142</h2></div>
             </div>
-            <div class="stat-card">
-                <div class="icon-box" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">
-                    <ion-icon name="arrow-up"></ion-icon>
-                </div>
-                <div class="stat-info"><h3>Toplam Upload</h3><h2>450 GB</h2></div>
-            </div>
-            <div class="stat-card">
-                <div class="icon-box" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">
-                    <ion-icon name="arrow-down"></ion-icon>
-                </div>
-                <div class="stat-info"><h3>Toplam Download</h3><h2>1.2 TB</h2></div>
+            
+            <h2 style="margin-bottom: 15px;">Senin İçin Seçilenler</h2>
+            <div class="movie-scroll">
+                <div class="movie-card"><img src="https://m.media-amazon.com/images/M/MV5BODcwNWE3OTMtMDc3MS00NDFjLWE1OTAtNDU3NjgxODMxY2UyXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_.jpg"><div class="movie-info">One Piece</div></div>
+                <div class="movie-card"><img src="https://m.media-amazon.com/images/M/MV5CNvbH6f9z-Q0NDAyLTAwY2MtZDIwYjQ3MzE2MWM1XkEyXkFqcGdeQXVyMzgxODM4NjM@._V1_FMjpg_UX1000_.jpg"><div class="movie-info">Attack on Titan</div></div>
+                <div class="movie-card"><img src="https://m.media-amazon.com/images/M/MV5BNGY4MTg3NzgtMmFkZi00NTg5LWExMmEtMWI3YzI1ODdmMWQ1XkEyXkFqcGdeQXVyMjQwMDg0Ng@@._V1_.jpg"><div class="movie-info">Death Note</div></div>
+                <div class="movie-card"><img src="https://m.media-amazon.com/images/M/MV5BMGU2NjFhNTQtNjAzOS00YjAxLTgwOGEtMWJhMzQ1MDcxMDIyXkEyXkFqcGdeQXVyMTI3MDk3MzQ@._V1_.jpg"><div class="movie-info">Bleach</div></div>
+                <div class="movie-card"><img src="https://upload.wikimedia.org/wikipedia/en/8/86/Naruto_Shippuden_2009.jpg"><div class="movie-info">Naruto</div></div>
             </div>
         </div>
 
-        <div class="table-container">
-            <div class="table-header">
-                <h3>Son Aktif Kullanıcılar</h3>
-                <button style="background:#3b82f6; border:none; color:white; padding:8px 15px; border-radius:6px; cursor:pointer;">+ Yeni Ekle</button>
+        <div id="games" class="section">
+            <div class="score-board">
+                <span>Refleks Testi</span>
+                <span style="color: #4cd137;">Skor: <span id="score">0</span></span>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Kullanıcı Adı</th>
-                        <th>Protokol</th>
-                        <th>Veri Kullanımı</th>
-                        <th>Bitiş Tarihi</th>
-                        <th>Durum</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Rex77</td>
-                        <td>VLESS</td>
-                        <td>12.5 GB / 50 GB</td>
-                        <td>2026-02-20</td>
-                        <td><span class="status-badge active-badge">Aktif</span></td>
-                    </tr>
-                    <tr>
-                        <td>Ahmet_Yilmaz</td>
-                        <td>VMess</td>
-                        <td>45.2 GB / 100 GB</td>
-                        <td>2026-01-25</td>
-                        <td><span class="status-badge active-badge">Aktif</span></td>
-                    </tr>
-                    <tr>
-                        <td>Mehmet_Demir</td>
-                        <td>Trojan</td>
-                        <td>50.0 GB / 50 GB</td>
-                        <td>2026-01-18</td>
-                        <td><span class="status-badge expired-badge">Süresi Doldu</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <p style="margin-bottom: 10px; color: #aaa;">Beyaz ışığa olabildiğince hızlı tıkla!</p>
+            
+            <div class="game-container" id="gameArea" onclick="missClick(event)">
+                </div>
+            <button onclick="startGame()" style="margin-top: 15px; padding: 10px 30px; background: #3b82f6; color: white; border: none; border-radius: 5px; font-size: 1.2em; cursor: pointer;">Oyunu Başlat</button>
         </div>
+
+        <div id="chat" class="section">
+            <h2>Gojo ile Sohbet</h2>
+            <div class="chat-box">
+                <div class="messages" id="msgContainer">
+                    <div class="msg bot">Selam! Ben Satoru Gojo. Bugün kimi pataklıyoruz?</div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="userMsg" placeholder="Mesajını yaz..." onkeypress="handleEnter(event)">
+                    <button onclick="sendMessage()"><ion-icon name="send"></ion-icon></button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // Senin Firebase Bilgilerin
         const firebaseConfig = {
           apiKey: "AIzaSyBdbkMzNRHaWUCPFWwf2BEN3QH0434dP60",
           authDomain: "myvpswebsite.firebaseapp.com",
@@ -249,14 +199,107 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Çıkış Butonu
+        // Çıkış Yap
         document.getElementById('logoutBtn').addEventListener('click', () => {
-            signOut(auth).then(() => {
-                window.location.href = "index.html";
-            }).catch((error) => {
-                alert("Çıkış hatası.");
-            });
+            signOut(auth).then(() => window.location.href = "index.html");
         });
+    </script>
+
+    <script>
+        // --- TAB DEĞİŞTİRME ---
+        function switchTab(tabId) {
+            // Tüm sekmeleri gizle
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            
+            // Seçileni aç
+            document.getElementById(tabId).classList.add('active');
+            
+            // Menü aktifliği (Basit döngü)
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- OYUN MANTIĞI ---
+        let score = 0;
+        let gameActive = false;
+        
+        function startGame() {
+            score = 0;
+            document.getElementById('score').innerText = score;
+            gameActive = true;
+            spawnTarget();
+        }
+
+        function spawnTarget() {
+            if(!gameActive) return;
+            const area = document.getElementById('gameArea');
+            area.innerHTML = ''; // Temizle
+            
+            const target = document.createElement('div');
+            target.classList.add('target');
+            
+            // Rastgele konum
+            const x = Math.random() * (area.clientWidth - 50);
+            const y = Math.random() * (area.clientHeight - 50);
+            
+            target.style.left = x + 'px';
+            target.style.top = y + 'px';
+            
+            // Tıklama olayı
+            target.onclick = (e) => {
+                e.stopPropagation(); // Arka plana tıklamayı engelle
+                score++;
+                document.getElementById('score').innerText = score;
+                spawnTarget(); // Yeni hedef
+            };
+            
+            area.appendChild(target);
+        }
+
+        function missClick(e) {
+            if(gameActive && e.target.id === 'gameArea') {
+                alert("Iskaladın! Oyun Bitti. Skorun: " + score);
+                gameActive = false;
+                document.getElementById('gameArea').innerHTML = '';
+            }
+        }
+
+        // --- CHAT MANTIĞI ---
+        const responses = [
+            "Zayıfsın. Çok zayıf.",
+            "Alan genişletmemi görmek ister misin?",
+            "Tatlı almaya gidiyorum, bir şey ister misin?",
+            "Endişelenme, en güçlü benim.",
+            "Bu sıkıcı, hadi oyun oynayalım."
+        ];
+
+        function sendMessage() {
+            const input = document.getElementById('userMsg');
+            const text = input.value;
+            if(text.trim() === "") return;
+
+            addMsg(text, 'user');
+            input.value = '';
+
+            // Bot Cevabı (1 saniye gecikmeli)
+            setTimeout(() => {
+                const randomRes = responses[Math.floor(Math.random() * responses.length)];
+                addMsg(randomRes, 'bot');
+            }, 1000);
+        }
+
+        function addMsg(text, type) {
+            const container = document.getElementById('msgContainer');
+            const div = document.createElement('div');
+            div.className = 'msg ' + type;
+            div.innerText = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight; // En alta kaydır
+        }
+
+        function handleEnter(e) {
+            if(e.key === 'Enter') sendMessage();
+        }
     </script>
 
 </body>
