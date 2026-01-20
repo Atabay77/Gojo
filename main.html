@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gojo Dashboard</title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body {
+            min-height: 100vh;
+            /* Ana sayfadaki Gojo resmi buraya da gelecek */
+            background-image: url('gojo.jpg');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            background-color: #0f2027;
+            display: flex;
+            color: white;
+        }
+
+        /* --- YAN MENÜ (SIDEBAR) --- */
+        .sidebar {
+            width: 80px; height: 100vh;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255,255,255,0.2);
+            display: flex; flex-direction: column; align-items: center; padding-top: 20px;
+            transition: width 0.3s;
+            overflow: hidden; white-space: nowrap; z-index: 100;
+        }
+        .sidebar:hover { width: 250px; } /* Üzerine gelince açılır */
+        
+        .sidebar .logo { font-size: 1.5em; font-weight: 700; margin-bottom: 50px; opacity: 0; transition: .3s; }
+        .sidebar:hover .logo { opacity: 1; }
+
+        .menu-item {
+            width: 100%; padding: 15px 20px;
+            display: flex; align-items: center;
+            cursor: pointer; transition: .3s; text-decoration: none; color: white;
+        }
+        .menu-item:hover { background: rgba(255,255,255,0.2); border-left: 4px solid #fff; }
+        
+        .menu-item ion-icon { font-size: 1.8em; min-width: 40px; }
+        .menu-text { margin-left: 15px; font-size: 1.1em; opacity: 0; transition: .3s; }
+        .sidebar:hover .menu-text { opacity: 1; }
+
+        .logout-btn { margin-top: auto; margin-bottom: 20px; color: #ff6b6b; }
+
+        /* --- ANA İÇERİK --- */
+        .main-content {
+            flex: 1; padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-title { font-size: 2.5em; font-weight: 700; margin-bottom: 10px; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .header-subtitle { font-size: 1.2em; color: #ddd; margin-bottom: 40px; }
+
+        /* KARTLAR */
+        .cards-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px; padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: .3s;
+        }
+        .card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.15); }
+
+        .card-icon { font-size: 2.5em; margin-bottom: 10px; color: #4facfe; }
+        .card h3 { font-size: 1.1em; font-weight: 500; color: #ccc; }
+        .card h2 { font-size: 2em; font-weight: 700; margin-top: 5px; }
+
+        /* MOBİL UYUM */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: 60px; flex-direction: row; justify-content: space-around; padding: 0; bottom: 0; position: fixed; border-right: none; border-top: 1px solid rgba(255,255,255,0.2); background: #0f2027; }
+            .sidebar:hover { width: 100%; }
+            .menu-text, .logo { display: none; }
+            .menu-item { justify-content: center; padding: 0; }
+            .menu-item:hover { border-left: none; border-top: 4px solid #fff; }
+            .main-content { padding: 20px 20px 80px 20px; }
+            .logout-btn { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="logo">GOJO PANEL</div>
+        
+        <a href="#" class="menu-item">
+            <ion-icon name="home-outline"></ion-icon>
+            <span class="menu-text">Ana Sayfa</span>
+        </a>
+        <a href="#" class="menu-item">
+            <ion-icon name="server-outline"></ion-icon>
+            <span class="menu-text">Sunucular</span>
+        </a>
+        <a href="#" class="menu-item">
+            <ion-icon name="stats-chart-outline"></ion-icon>
+            <span class="menu-text">İstatistikler</span>
+        </a>
+        <a href="#" class="menu-item">
+            <ion-icon name="settings-outline"></ion-icon>
+            <span class="menu-text">Ayarlar</span>
+        </a>
+
+        <a href="#" class="menu-item logout-btn" id="logoutBtn">
+            <ion-icon name="log-out-outline"></ion-icon>
+            <span class="menu-text">Çıkış Yap</span>
+        </a>
+    </nav>
+
+    <div class="main-content">
+        <h1 class="header-title">Hoşgeldin, Fixer!</h1>
+        <p class="header-subtitle">Sistemler stabil, her şey yolunda görünüyor.</p>
+
+        <div class="cards-container">
+            <div class="card">
+                <div class="card-icon" style="color: #2ecc71;"><ion-icon name="pulse-outline"></ion-icon></div>
+                <h3>Sistem Durumu</h3>
+                <h2>Aktif</h2>
+            </div>
+            <div class="card">
+                <div class="card-icon" style="color: #f1c40f;"><ion-icon name="people-outline"></ion-icon></div>
+                <h3>Toplam Kullanıcı</h3>
+                <h2>1,245</h2>
+            </div>
+            <div class="card">
+                <div class="card-icon" style="color: #e74c3c;"><ion-icon name="bug-outline"></ion-icon></div>
+                <h3>Tespit Edilen Hatalar</h3>
+                <h2>0</h2>
+            </div>
+            <div class="card">
+                <div class="card-icon" style="color: #9b59b6;"><ion-icon name="cloud-download-outline"></ion-icon></div>
+                <h3>Veri Kullanımı</h3>
+                <h2>340 GB</h2>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyBdbkMzNRHaWUCPFWwf2BEN3QH0434dP60",
+          authDomain: "myvpswebsite.firebaseapp.com",
+          projectId: "myvpswebsite",
+          storageBucket: "myvpswebsite.firebasestorage.app",
+          messagingSenderId: "691417247762",
+          appId: "1:691417247762:web:c48f3b06b4b6eb418f68cb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Çıkış Butonu
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                // Çıkış başarılı, giriş ekranına dön
+                window.location.href = "index.html";
+            }).catch((error) => {
+                alert("Çıkış yapılırken hata oluştu.");
+            });
+        });
+    </script>
+
+</body>
+</html>
