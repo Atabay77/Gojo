@@ -13,15 +13,10 @@
 
         body {
             display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            
-            /* --- ARKA PLAN AYARI --- */
-            /* GitHub'daki 'gojo.jpg' dosyasını çeker */
+            /* Arka Plan */
             background-image: url('gojo.jpg');
-            
-            background-size: cover; 
-            background-position: center; 
-            background-attachment: fixed;
-            background-color: #0f2027; /* Resim yüklenmezse koyu renk */
+            background-size: cover; background-position: center; background-attachment: fixed;
+            background-color: #0f2027;
         }
 
         header {
@@ -45,14 +40,12 @@
         
         .navigation .btnLogin-popup:hover { background: #fff; color: #000; }
 
-        /* --- NETLEŞTİRİLMİŞ CAM KUTU --- */
+        /* --- CAM KUTU --- */
         .wrapper {
             position: relative; width: 400px; height: 440px;
-            /* Arka plan biraz daha şeffaf yapıldı */
             background: rgba(255, 255, 255, 0.05); 
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            /* Bulanıklık (Blur) azaltıldı, böylece arkadaki Gojo net görünür */
             backdrop-filter: blur(8px); 
             -webkit-backdrop-filter: blur(8px);
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
@@ -82,6 +75,19 @@
             position: absolute; top: 50%; left: 5px; transform: translateY(-50%);
             font-size: 1em; color: #fff; font-weight: 500; pointer-events: none; transition: .5s;
         }
+
+        /* --- BEYAZ EKRAN SORUNUNU ÇÖZEN SİHİRLİ KOD BURADA --- */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+            /* Arka planı şeffaflaştırmak için iç gölge hilesi */
+            -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0) inset !important;
+            /* Yazı rengini beyaza zorla */
+            -webkit-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+        /* ----------------------------------------------------- */
 
         .input-box input:focus ~ label, .input-box input:valid ~ label { top: -5px; }
 
@@ -196,7 +202,7 @@
         registerLink.addEventListener('click', () => wrapper.classList.add('active'));
         loginLink.addEventListener('click', () => wrapper.classList.remove('active'));
 
-        // KAYIT İŞLEMİ
+        // KAYIT
         const registerForm = document.getElementById('register-form');
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -214,7 +220,7 @@
                 });
         });
 
-        // GİRİŞ İŞLEMİ
+        // GİRİŞ
         const loginForm = document.getElementById('login-form');
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
