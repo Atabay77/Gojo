@@ -13,10 +13,15 @@
 
         body {
             display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            /* Arka Plan Resimleri */
-            background-image: url('1000011377.jpg'), url('https://wallpaperaccess.com/full/5842823.jpg');
-            background-size: cover; background-position: center; background-attachment: fixed;
-            background-color: #0f2027;
+            
+            /* --- ARKA PLAN AYARI --- */
+            /* GitHub'daki 'gojo.jpg' dosyasını çeker */
+            background-image: url('gojo.jpg');
+            
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed;
+            background-color: #0f2027; /* Resim yüklenmezse koyu renk */
         }
 
         header {
@@ -40,22 +45,21 @@
         
         .navigation .btnLogin-popup:hover { background: #fff; color: #000; }
 
-        /* --- İŞTE DÜZELTİLEN KISIM BURASI --- */
+        /* --- NETLEŞTİRİLMİŞ CAM KUTU --- */
         .wrapper {
             position: relative; width: 400px; height: 440px;
-            /* Daha şeffaf arka plan */
+            /* Arka plan biraz daha şeffaf yapıldı */
             background: rgba(255, 255, 255, 0.05); 
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            /* Bulanıklık 20px'den 8px'e düşürüldü -> Daha net görüntü */
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px); /* Safari için */
+            /* Bulanıklık (Blur) azaltıldı, böylece arkadaki Gojo net görünür */
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
             display: flex; justify-content: center; align-items: center;
             overflow: hidden;
             transition: height .2s ease;
         }
-        /* ------------------------------------ */
 
         .wrapper.active { height: 520px; }
 
@@ -192,7 +196,7 @@
         registerLink.addEventListener('click', () => wrapper.classList.add('active'));
         loginLink.addEventListener('click', () => wrapper.classList.remove('active'));
 
-        // --- KAYIT OLMA (REGISTER) ---
+        // KAYIT İŞLEMİ
         const registerForm = document.getElementById('register-form');
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -210,7 +214,7 @@
                 });
         });
 
-        // --- GİRİŞ YAPMA (LOGIN) ---
+        // GİRİŞ İŞLEMİ
         const loginForm = document.getElementById('login-form');
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
