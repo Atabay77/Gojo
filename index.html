@@ -13,10 +13,10 @@
 
         body {
             display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            /* Arka Plan: Önce senin dosyan, yoksa internetteki yedek */
+            /* Arka Plan Resimleri */
             background-image: url('1000011377.jpg'), url('https://wallpaperaccess.com/full/5842823.jpg');
             background-size: cover; background-position: center; background-attachment: fixed;
-            background-color: #0f2027; /* Resim yüklenmezse koyu renk */
+            background-color: #0f2027;
         }
 
         header {
@@ -40,24 +40,27 @@
         
         .navigation .btnLogin-popup:hover { background: #fff; color: #000; }
 
+        /* --- İŞTE DÜZELTİLEN KISIM BURASI --- */
         .wrapper {
             position: relative; width: 400px; height: 440px;
-            background: rgba(255, 255, 255, 0.1);
+            /* Daha şeffaf arka plan */
+            background: rgba(255, 255, 255, 0.05); 
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            backdrop-filter: blur(20px);
+            /* Bulanıklık 20px'den 8px'e düşürüldü -> Daha net görüntü */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px); /* Safari için */
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
             display: flex; justify-content: center; align-items: center;
             overflow: hidden;
             transition: height .2s ease;
         }
+        /* ------------------------------------ */
 
-        /* Kutu Genişlemesi */
         .wrapper.active { height: 520px; }
 
         .wrapper .form-box { width: 100%; padding: 40px; }
         
-        /* Kaydırma Efektleri */
         .wrapper .form-box.login { transition: transform .18s ease; transform: translateX(0); }
         .wrapper.active .form-box.login { transition: none; transform: translateX(-400px); }
         
@@ -161,12 +164,10 @@
     </div>
 
     <script type="module">
-        // Google'dan gerekli kütüphaneleri çekiyoruz
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
         from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // --- SENİN VERDİĞİN KODLAR BURAYA GÖMÜLDÜ ---
         const firebaseConfig = {
           apiKey: "AIzaSyBdbkMzNRHaWUCPFWwf2BEN3QH0434dP60",
           authDomain: "myvpswebsite.firebaseapp.com",
@@ -176,17 +177,14 @@
           appId: "1:691417247762:web:c48f3b06b4b6eb418f68cb"
         };
 
-        // Sistemi Başlat
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Görsel Geçişler (Login <-> Register)
         const wrapper = document.querySelector('.wrapper');
         const loginLink = document.querySelector('.login-link');
         const registerLink = document.querySelector('.register-link');
         const btnPopup = document.querySelector('.btnLogin-popup');
         
-        // Menüdeki Login butonuna basınca pencere açılsın (isteğe bağlı)
         if(btnPopup) {
             btnPopup.addEventListener('click', ()=> wrapper.classList.add('active-popup'));
         }
@@ -194,27 +192,25 @@
         registerLink.addEventListener('click', () => wrapper.classList.add('active'));
         loginLink.addEventListener('click', () => wrapper.classList.remove('active'));
 
-        // --- KAYIT OLMA İŞLEMİ (REGISTER) ---
+        // --- KAYIT OLMA (REGISTER) ---
         const registerForm = document.getElementById('register-form');
         registerForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Sayfa yenilenmesini engelle
+            e.preventDefault();
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             const username = document.getElementById('register-username').value;
 
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Başarılı olursa:
                     alert("✅ Kayıt Başarılı! Hoşgeldin " + username);
-                    wrapper.classList.remove('active'); // Giriş ekranına geri at
+                    wrapper.classList.remove('active');
                 })
                 .catch((error) => {
-                    // Hata olursa (örn: şifre çok kısa):
                     alert("❌ Hata: " + error.message);
                 });
         });
 
-        // --- GİRİŞ YAPMA İŞLEMİ (LOGIN) ---
+        // --- GİRİŞ YAPMA (LOGIN) ---
         const loginForm = document.getElementById('login-form');
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -223,10 +219,7 @@
 
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Başarılı olursa:
-                    alert("✅ Giriş Başarılı! Yönlendiriliyorsunuz...");
-                    // İstersen burada başka sayfaya yönlendirebilirsin:
-                    // window.location.href = "panel.html"; 
+                    alert("✅ Giriş Başarılı!");
                 })
                 .catch((error) => {
                     alert("❌ Giriş Başarısız: Email veya şifre hatalı.");
