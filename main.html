@@ -3,190 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gojo Fun Hub</title>
+    <title>Gojo Casino Royale</title>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         
         body {
             min-height: 100vh;
-            background-image: url('gojo.jpg'); /* Senin resmin */
-            background-size: cover; background-position: center; background-attachment: fixed;
-            background-color: #0f2027;
-            display: flex; color: white; overflow: hidden;
+            background-color: #0f1923; /* Koyu Casino Teması */
+            color: white;
+            display: flex;
+            overflow: hidden;
         }
 
         /* --- YAN MENÜ --- */
         .sidebar {
             width: 80px; height: 100vh;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px);
-            border-right: 1px solid rgba(255,255,255,0.1);
+            background: #1a242d; border-right: 1px solid #2f3b4b;
             display: flex; flex-direction: column; align-items: center; padding-top: 20px;
             z-index: 100; transition: .3s;
         }
-        .sidebar:hover { width: 220px; align-items: flex-start; padding-left: 20px; }
+        .sidebar:hover { width: 240px; align-items: flex-start; padding-left: 20px; }
         
+        .logo { font-size: 1.5em; font-weight: 800; color: #00E701; margin-bottom: 40px; white-space: nowrap; }
+        .sidebar:hover .logo::after { content: ' CASINO'; color: #fff; }
+
         .menu-item {
-            width: 90%; padding: 15px; margin-bottom: 10px;
+            width: 90%; padding: 15px; margin-bottom: 5px;
             display: flex; align-items: center; border-radius: 12px;
-            cursor: pointer; transition: .2s; color: #ccc;
+            cursor: pointer; transition: .2s; color: #8b9bb4;
         }
-        .menu-item:hover, .menu-item.active { background: #fff; color: #000; }
-        .menu-item ion-icon { font-size: 1.8em; min-width: 30px; }
+        .menu-item:hover, .menu-item.active { background: #2f3b4b; color: #fff; }
+        .menu-item ion-icon { font-size: 1.6em; min-width: 30px; }
         .menu-text { margin-left: 15px; opacity: 0; transition: .2s; white-space: nowrap; font-weight: 600; }
         .sidebar:hover .menu-text { opacity: 1; }
 
-        /* --- İÇERİK ALANI --- */
-        .content-area { flex: 1; position: relative; overflow: hidden; }
-        
-        .section {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            padding: 40px; display: none; opacity: 0; transition: .5s;
-            overflow-y: auto;
-        }
-        .section.active { display: block; opacity: 1; animation: fadeIn 0.5s forwards; }
+        /* --- ANA ALAN --- */
+        .main-content { flex: 1; display: flex; flex-direction: column; background: #0f1923; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- ÜST BAR (CANLI AKIŞ) --- */
+        .top-bar {
+            height: 70px; background: #1a242d; border-bottom: 1px solid #2f3b4b;
+            display: flex; align-items: center; padding: 0 20px; justify-content: space-between;
+        }
+        .history-rail {
+            flex: 1; height: 40px; margin: 0 20px;
+            display: flex; align-items: center; gap: 10px; overflow: hidden;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .rail-box {
+            min-width: 30px; height: 30px; border-radius: 6px; flex-shrink: 0;
+            animation: slideLeft 0.5s ease-out;
+        }
+        .bg-red { background: #ff4757; box-shadow: 0 0 10px rgba(255, 71, 87, 0.4); }
+        .bg-green { background: #2ecc71; box-shadow: 0 0 10px rgba(46, 204, 113, 0.4); }
+        .bg-blue { background: #3742fa; box-shadow: 0 0 10px rgba(55, 66, 250, 0.4); }
 
-        /* --- 1. SİNEMA MODU (NETFLIX STYLE) --- */
-        .movie-hero {
-            width: 100%; height: 300px; border-radius: 20px;
-            background: linear-gradient(to top, #000, transparent), url('https://wallpapers.com/images/hd/jujutsu-kaisen-pc-4k-j8w4i7i8w4i7i8w4.jpg');
-            background-size: cover; background-position: center;
-            display: flex; align-items: flex-end; padding: 30px; margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .movie-scroll { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; }
-        .movie-card {
-            min-width: 160px; height: 240px; border-radius: 12px;
-            background: #333; position: relative; overflow: hidden; cursor: pointer;
-            transition: .3s; border: 1px solid rgba(255,255,255,0.1);
-        }
-        .movie-card:hover { transform: scale(1.05); border-color: #fff; z-index: 10; }
-        .movie-card img { width: 100%; height: 100%; object-fit: cover; }
-        .movie-info {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            padding: 10px; font-size: 0.9em;
+        @keyframes slideLeft { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .balance-box {
+            background: #0f1923; padding: 8px 15px; border-radius: 8px; border: 1px solid #2ecc71;
+            font-weight: 700; color: #2ecc71; display: flex; align-items: center; gap: 10px; cursor: pointer;
         }
 
-        /* --- 2. OYUN MODU (REFLEKS) --- */
+        /* --- OYUN ALANLARI --- */
+        .game-stage { flex: 1; padding: 30px; position: relative; overflow-y: auto; }
+        .game-section { display: none; animation: fadeIn 0.4s; }
+        .game-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ORTAK OYUN UI */
         .game-container {
-            width: 100%; height: 80%; background: rgba(255,255,255,0.05);
-            border-radius: 20px; position: relative; border: 2px dashed rgba(255,255,255,0.2);
-            overflow: hidden; cursor: crosshair;
+            max-width: 900px; margin: 0 auto;
+            background: #1a242d; border-radius: 20px; border: 1px solid #2f3b4b;
+            padding: 20px; display: grid; grid-template-columns: 300px 1fr; gap: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        .target {
-            width: 50px; height: 50px; background: #fff; border-radius: 50%;
-            position: absolute; box-shadow: 0 0 15px #fff;
-            animation: pulse 1s infinite; cursor: pointer;
+        .controls { background: #212e3a; padding: 20px; border-radius: 15px; display: flex; flex-direction: column; gap: 15px; }
+        .display-area { 
+            background: #0f1923; border-radius: 15px; position: relative; 
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+            border: 1px solid #2f3b4b; min-height: 400px; overflow: hidden;
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        .score-board { font-size: 2em; font-weight: 700; margin-bottom: 20px; display: flex; justify-content: space-between; }
 
-        /* --- 3. CHAT MODU --- */
-        .chat-box {
-            width: 100%; height: 80%; background: rgba(0,0,0,0.5);
-            border-radius: 20px; display: flex; flex-direction: column; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
+        label { font-size: 0.8em; color: #8b9bb4; font-weight: 600; }
+        input[type="number"] {
+            width: 100%; padding: 12px; background: #0f1923; border: 2px solid #2f3b4b;
+            border-radius: 8px; color: white; font-weight: 700; outline: none;
         }
-        .messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .msg { padding: 10px 15px; border-radius: 10px; max-width: 70%; font-size: 0.9em; }
-        .msg.bot { background: #fff; color: #000; align-self: flex-start; border-bottom-left-radius: 0; }
-        .msg.user { background: #3b82f6; color: #fff; align-self: flex-end; border-bottom-right-radius: 0; }
-        .input-area { padding: 15px; background: rgba(255,255,255,0.1); display: flex; gap: 10px; }
-        .input-area input { flex: 1; background: transparent; border: none; color: #fff; outline: none; }
-        .input-area button { padding: 8px 15px; background: #3b82f6; border: none; color: #fff; border-radius: 5px; cursor: pointer; }
+        input[type="number"]:focus { border-color: #00E701; }
 
-        /* MOBİL */
+        .btn-bet {
+            width: 100%; padding: 15px; border: none; border-radius: 8px;
+            background: #00E701; color: #000; font-weight: 800; font-size: 1.1em;
+            cursor: pointer; transition: .2s; margin-top: auto;
+        }
+        .btn-bet:hover { background: #00c201; transform: scale(0.98); }
+        .btn-bet:disabled { background: #3a4b5c; color: #8b9bb4; cursor: not-allowed; }
+
+        /* OYUN 1: RULET RENKLERİ */
+        .color-options { display: flex; gap: 10px; margin-top: 10px; }
+        .color-btn { flex: 1; height: 50px; border-radius: 8px; border: none; cursor: pointer; opacity: 0.5; transition: .2s; border: 2px solid transparent;}
+        .color-btn.selected { opacity: 1; transform: scale(1.05); border-color: white; }
+        
+        .wheel-number {
+            font-size: 8em; font-weight: 900;
+            text-shadow: 0 0 50px rgba(255,255,255,0.2);
+            transition: color 0.2s;
+        }
+
+        /* OYUN 2: CRASH */
+        .crash-graph {
+            font-size: 5em; font-weight: 900; color: white; z-index: 2;
+        }
+        .rocket { position: absolute; bottom: 20px; left: 20px; font-size: 3em; transition: .1s; }
+        .crashed-text { color: #ff4757; text-shadow: 0 0 20px red; }
+
+        /* OYUN 3: SLOT */
+        .slot-machine { display: flex; gap: 10px; background: #222; padding: 20px; border-radius: 10px; border: 4px solid #f1c40f; }
+        .slot-reel { 
+            width: 80px; height: 100px; background: #fff; border-radius: 5px; 
+            font-size: 3em; display: flex; justify-content: center; align-items: center; color: #333;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* MOBİL UYUM */
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            .sidebar { width: 100%; height: 60px; bottom: 0; flex-direction: row; justify-content: space-around; position: fixed; padding: 0; }
-            .sidebar:hover { width: 100%; padding: 0; }
-            .menu-text { display: none; }
-            .section { padding: 20px 20px 80px 20px; }
-            .movie-hero { height: 200px; }
+            .sidebar { width: 100%; height: 60px; bottom: 0; flex-direction: row; justify-content: space-around; padding: 0; position: fixed; border-right: none; border-top: 1px solid #2f3b4b; }
+            .sidebar:hover { width: 100%; }
+            .menu-text, .logo { display: none; }
+            .main-content { margin-bottom: 60px; }
+            .game-container { grid-template-columns: 1fr; }
+            .display-area { min-height: 250px; order: -1; }
         }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <div style="margin-bottom: 30px; margin-top: 10px; font-weight: 900; font-size: 1.5em; color: #fff;">G</div>
+        <div class="logo">GOJO</div>
         
-        <div class="menu-item active" onclick="switchTab('movies')">
-            <ion-icon name="film-outline"></ion-icon>
-            <span class="menu-text">Sinema</span>
+        <div class="menu-item active" onclick="switchGame('roulette')">
+            <ion-icon name="disc-outline"></ion-icon>
+            <span class="menu-text">Renk Ruleti</span>
         </div>
-        <div class="menu-item" onclick="switchTab('games')">
-            <ion-icon name="game-controller-outline"></ion-icon>
-            <span class="menu-text">Oyun</span>
+        <div class="menu-item" onclick="switchGame('crash')">
+            <ion-icon name="rocket-outline"></ion-icon>
+            <span class="menu-text">Crash</span>
         </div>
-        <div class="menu-item" onclick="switchTab('chat')">
-            <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-            <span class="menu-text">Chat</span>
+        <div class="menu-item" onclick="switchGame('slots')">
+            <ion-icon name="grid-outline"></ion-icon>
+            <span class="menu-text">Slots</span>
         </div>
+        
         <div class="menu-item" id="logoutBtn" style="margin-top: auto; color: #ff4757;">
             <ion-icon name="log-out-outline"></ion-icon>
             <span class="menu-text">Çıkış</span>
         </div>
     </nav>
 
-    <div class="content-area">
-
-        <div id="movies" class="section active">
-            <div class="movie-hero">
-                <div>
-                    <h1 style="font-size: 3em; font-weight: 800; text-shadow: 0 0 20px black;">JUJUTSU KAISEN 0</h1>
-                    <p>Lanetlerin kraliçesi Rika ve Yuta'nın hikayesi.</p>
-                    <button style="margin-top: 10px; padding: 10px 20px; background: #fff; border:none; border-radius: 5px; font-weight: 700; cursor: pointer;">İzle</button>
+    <div class="main-content">
+        
+        <div class="top-bar">
+            <div class="history-rail" id="historyRail">
                 </div>
+            <div class="balance-box" onclick="addMoney()">
+                <ion-icon name="wallet"></ion-icon>
+                <span id="userBalance">10000.00</span> $
             </div>
+        </div>
+
+        <div class="game-stage">
             
-            <h2 style="margin-bottom: 15px;">Senin İçin Seçilenler</h2>
-            <div class="movie-scroll">
-                <div class="movie-card"><img src="https://m.media-amazon.com/images/M/MV5BODcwNWE3OTMtMDc3MS00NDFjLWE1OTAtNDU3NjgxODMxY2UyXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_.jpg"><div class="movie-info">One Piece</div></div>
-                <div class="movie-card"><img src="https://m.media-amazon.com/images/M/MV5CNvbH6f9z-Q0NDAyLTAwY2MtZDIwYjQ3MzE2MWM1XkEyXkFqcGdeQXVyMzgxODM4NjM@._V1_FMjpg_UX1000_.jpg"><div class="movie-info">Attack on Titan</div></div>
-                <div class="movie-card"><img src="https://m.media-amazon.com/images/M/MV5BNGY4MTg3NzgtMmFkZi00NTg5LWExMmEtMWI3YzI1ODdmMWQ1XkEyXkFqcGdeQXVyMjQwMDg0Ng@@._V1_.jpg"><div class="movie-info">Death Note</div></div>
-                <div class="movie-card"><img src="https://m.media-amazon.com/images/M/MV5BMGU2NjFhNTQtNjAzOS00YjAxLTgwOGEtMWJhMzQ1MDcxMDIyXkEyXkFqcGdeQXVyMTI3MDk3MzQ@._V1_.jpg"><div class="movie-info">Bleach</div></div>
-                <div class="movie-card"><img src="https://upload.wikimedia.org/wikipedia/en/8/86/Naruto_Shippuden_2009.jpg"><div class="movie-info">Naruto</div></div>
-            </div>
-        </div>
-
-        <div id="games" class="section">
-            <div class="score-board">
-                <span>Refleks Testi</span>
-                <span style="color: #4cd137;">Skor: <span id="score">0</span></span>
-            </div>
-            <p style="margin-bottom: 10px; color: #aaa;">Beyaz ışığa olabildiğince hızlı tıkla!</p>
-            
-            <div class="game-container" id="gameArea" onclick="missClick(event)">
-                </div>
-            <button onclick="startGame()" style="margin-top: 15px; padding: 10px 30px; background: #3b82f6; color: white; border: none; border-radius: 5px; font-size: 1.2em; cursor: pointer;">Oyunu Başlat</button>
-        </div>
-
-        <div id="chat" class="section">
-            <h2>Gojo ile Sohbet</h2>
-            <div class="chat-box">
-                <div class="messages" id="msgContainer">
-                    <div class="msg bot">Selam! Ben Satoru Gojo. Bugün kimi pataklıyoruz?</div>
-                </div>
-                <div class="input-area">
-                    <input type="text" id="userMsg" placeholder="Mesajını yaz..." onkeypress="handleEnter(event)">
-                    <button onclick="sendMessage()"><ion-icon name="send"></ion-icon></button>
+            <div id="roulette" class="game-section active">
+                <h1 style="margin-bottom: 20px;">Renk Ruleti</h1>
+                <div class="game-container">
+                    <div class="controls">
+                        <div>
+                            <label>Bahis Miktarı</label>
+                            <input type="number" id="rouletteBet" value="100">
+                        </div>
+                        <label>Renk Seç</label>
+                        <div class="color-options">
+                            <button class="color-btn bg-red" onclick="selectColor('red')"></button>
+                            <button class="color-btn bg-green" onclick="selectColor('green')">x14</button>
+                            <button class="color-btn bg-blue" onclick="selectColor('blue')"></button>
+                        </div>
+                        <button class="btn-bet" onclick="playRoulette()">BAHİS YAP</button>
+                    </div>
+                    <div class="display-area">
+                        <div class="wheel-number" id="rouletteResult">?</div>
+                        <p style="color: #8b9bb4; margin-top: 10px;" id="rouletteStatus">Renk seç ve çevir!</p>
+                    </div>
                 </div>
             </div>
-        </div>
 
+            <div id="crash" class="game-section">
+                <h1 style="margin-bottom: 20px;">Crash (Uçak)</h1>
+                <div class="game-container">
+                    <div class="controls">
+                        <div>
+                            <label>Bahis Miktarı</label>
+                            <input type="number" id="crashBet" value="100">
+                        </div>
+                        <button class="btn-bet" id="crashBtn" onclick="toggleCrash()">BAHİS YAP</button>
+                    </div>
+                    <div class="display-area" style="background-image: radial-gradient(circle at center, #1f2b38 0%, #0f1923 70%);">
+                        <div class="crash-graph" id="crashMultiplier">1.00x</div>
+                        <div class="rocket" id="rocketIcon">🚀</div>
+                        <p id="crashStatus" style="margin-top: 20px; color: #8b9bb4;">Bahis yap ve uçuşa geç!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slots" class="game-section">
+                <h1 style="margin-bottom: 20px;">777 Slots</h1>
+                <div class="game-container">
+                    <div class="controls">
+                        <div>
+                            <label>Bahis Miktarı</label>
+                            <input type="number" id="slotBet" value="50">
+                        </div>
+                        <button class="btn-bet" onclick="playSlots()">ÇEVİR</button>
+                    </div>
+                    <div class="display-area">
+                        <div class="slot-machine">
+                            <div class="slot-reel" id="reel1">🍒</div>
+                            <div class="slot-reel" id="reel2">7️⃣</div>
+                            <div class="slot-reel" id="reel3">🍋</div>
+                        </div>
+                        <h2 style="margin-top: 20px;" id="slotStatus">Bol Şans!</h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
+        // Firebase Config (Senin verdiğin bilgiler)
         const firebaseConfig = {
           apiKey: "AIzaSyBdbkMzNRHaWUCPFWwf2BEN3QH0434dP60",
           authDomain: "myvpswebsite.firebaseapp.com",
@@ -195,112 +256,228 @@
           messagingSenderId: "691417247762",
           appId: "1:691417247762:web:c48f3b06b4b6eb418f68cb"
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-
-        // Çıkış Yap
         document.getElementById('logoutBtn').addEventListener('click', () => {
             signOut(auth).then(() => window.location.href = "index.html");
         });
     </script>
 
     <script>
-        // --- TAB DEĞİŞTİRME ---
-        function switchTab(tabId) {
-            // Tüm sekmeleri gizle
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        // --- GENEL AYARLAR ---
+        let balance = 10000.00;
+        const colors = ['bg-red', 'bg-green', 'bg-blue'];
+        
+        // Üst Bar animasyonu için rastgele kutu üret
+        setInterval(() => {
+            const rail = document.getElementById('historyRail');
+            const box = document.createElement('div');
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            box.className = `rail-box ${randomColor}`;
+            rail.prepend(box);
+            if(rail.children.length > 20) rail.lastChild.remove();
+        }, 2000);
+
+        function updateBalance(amount) {
+            balance += amount;
+            document.getElementById('userBalance').innerText = balance.toFixed(2);
+        }
+
+        function addMoney() {
+            balance += 1000;
+            updateBalance(0);
+            alert("Hesabına 1000$ eklendi! (Fake)");
+        }
+
+        function switchGame(gameId) {
+            document.querySelectorAll('.game-section').forEach(g => g.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            
-            // Seçileni aç
-            document.getElementById(tabId).classList.add('active');
-            
-            // Menü aktifliği (Basit döngü)
+            document.getElementById(gameId).classList.add('active');
             event.currentTarget.classList.add('active');
         }
 
-        // --- OYUN MANTIĞI ---
-        let score = 0;
-        let gameActive = false;
-        
-        function startGame() {
-            score = 0;
-            document.getElementById('score').innerText = score;
-            gameActive = true;
-            spawnTarget();
+        // --- OYUN 1: RULET ---
+        let selectedColor = null;
+
+        function selectColor(color) {
+            selectedColor = color;
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
         }
 
-        function spawnTarget() {
-            if(!gameActive) return;
-            const area = document.getElementById('gameArea');
-            area.innerHTML = ''; // Temizle
+        function playRoulette() {
+            const bet = parseFloat(document.getElementById('rouletteBet').value);
+            if(bet > balance) return alert("Yetersiz Bakiye!");
+            if(!selectedColor) return alert("Lütfen bir renk seç!");
+
+            updateBalance(-bet);
+            const status = document.getElementById('rouletteStatus');
+            const resultDisplay = document.getElementById('rouletteResult');
             
-            const target = document.createElement('div');
-            target.classList.add('target');
-            
-            // Rastgele konum
-            const x = Math.random() * (area.clientWidth - 50);
-            const y = Math.random() * (area.clientHeight - 50);
-            
-            target.style.left = x + 'px';
-            target.style.top = y + 'px';
-            
-            // Tıklama olayı
-            target.onclick = (e) => {
-                e.stopPropagation(); // Arka plana tıklamayı engelle
-                score++;
-                document.getElementById('score').innerText = score;
-                spawnTarget(); // Yeni hedef
-            };
-            
-            area.appendChild(target);
+            // Dönme Efekti
+            let count = 0;
+            const interval = setInterval(() => {
+                const rand = Math.floor(Math.random() * 15);
+                resultDisplay.innerText = rand;
+                // Renk değişimi (görsel)
+                if(rand === 0) resultDisplay.style.color = '#2ecc71';
+                else if(rand < 8) resultDisplay.style.color = '#ff4757';
+                else resultDisplay.style.color = '#3742fa';
+                count++;
+                
+                if(count > 20) {
+                    clearInterval(interval);
+                    finalizeRoulette(bet, rand);
+                }
+            }, 50);
         }
 
-        function missClick(e) {
-            if(gameActive && e.target.id === 'gameArea') {
-                alert("Iskaladın! Oyun Bitti. Skorun: " + score);
-                gameActive = false;
-                document.getElementById('gameArea').innerHTML = '';
+        function finalizeRoulette(bet, result) {
+            let winningColor = 'blue';
+            if(result === 0) winningColor = 'green';
+            else if(result < 8) winningColor = 'red';
+
+            // Tarihçeye ekle
+            const rail = document.getElementById('historyRail');
+            const box = document.createElement('div');
+            box.className = `rail-box bg-${winningColor}`;
+            rail.prepend(box);
+
+            if(winningColor === selectedColor) {
+                const multiplier = (winningColor === 'green') ? 14 : 2;
+                const winAmount = bet * multiplier;
+                updateBalance(winAmount);
+                document.getElementById('rouletteStatus').innerText = `KAZANDIN! +${winAmount}$`;
+                document.getElementById('rouletteStatus').style.color = '#2ecc71';
+            } else {
+                document.getElementById('rouletteStatus').innerText = `KAYBETTİN...`;
+                document.getElementById('rouletteStatus').style.color = '#ff4757';
             }
         }
 
-        // --- CHAT MANTIĞI ---
-        const responses = [
-            "Zayıfsın. Çok zayıf.",
-            "Alan genişletmemi görmek ister misin?",
-            "Tatlı almaya gidiyorum, bir şey ister misin?",
-            "Endişelenme, en güçlü benim.",
-            "Bu sıkıcı, hadi oyun oynayalım."
-        ];
+        // --- OYUN 2: CRASH ---
+        let crashInterval;
+        let multiplier = 1.00;
+        let isFlying = false;
+        let crashPoint = 0;
+        let currentBet = 0;
 
-        function sendMessage() {
-            const input = document.getElementById('userMsg');
-            const text = input.value;
-            if(text.trim() === "") return;
+        function toggleCrash() {
+            const btn = document.getElementById('crashBtn');
+            const betInput = document.getElementById('crashBet');
+            
+            if(!isFlying) {
+                // BAŞLAT
+                const bet = parseFloat(betInput.value);
+                if(bet > balance) return alert("Yetersiz Bakiye!");
+                
+                currentBet = bet;
+                updateBalance(-bet);
+                isFlying = true;
+                btn.innerText = "NAKİT ÇEK";
+                btn.style.background = "#f1c40f"; // Sarı buton
+                document.getElementById('crashStatus').innerText = "Yükseliyor...";
+                document.getElementById('crashMultiplier').classList.remove('crashed-text');
+                
+                multiplier = 1.00;
+                crashPoint = (Math.random() * 5) + 1; // 1x ile 6x arası patlar
+                if(Math.random() > 0.9) crashPoint = 20.0; // Nadiren çok yükseğe çıkar
 
-            addMsg(text, 'user');
-            input.value = '';
+                crashInterval = setInterval(() => {
+                    multiplier += 0.01 + (multiplier * 0.005); // Yavaşça hızlan
+                    document.getElementById('crashMultiplier').innerText = multiplier.toFixed(2) + "x";
+                    
+                    // Roket hareketi (Basit CSS)
+                    const rocket = document.getElementById('rocketIcon');
+                    rocket.style.bottom = (20 + (multiplier * 10)) + 'px';
+                    rocket.style.left = (20 + (multiplier * 20)) + 'px';
 
-            // Bot Cevabı (1 saniye gecikmeli)
-            setTimeout(() => {
-                const randomRes = responses[Math.floor(Math.random() * responses.length)];
-                addMsg(randomRes, 'bot');
-            }, 1000);
+                    if(multiplier >= crashPoint) {
+                        crashGame();
+                    }
+                }, 50);
+
+            } else {
+                // NAKİT ÇEK (KAZANMA)
+                clearInterval(crashInterval);
+                const winAmount = currentBet * multiplier;
+                updateBalance(winAmount);
+                document.getElementById('crashStatus').innerText = `KAZANDIN! +${winAmount.toFixed(2)}$`;
+                document.getElementById('crashStatus').style.color = "#2ecc71";
+                resetCrashUI();
+            }
         }
 
-        function addMsg(text, type) {
-            const container = document.getElementById('msgContainer');
-            const div = document.createElement('div');
-            div.className = 'msg ' + type;
-            div.innerText = text;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight; // En alta kaydır
+        function crashGame() {
+            clearInterval(crashInterval);
+            document.getElementById('crashMultiplier').innerText = "CRASHED @ " + multiplier.toFixed(2) + "x";
+            document.getElementById('crashMultiplier').classList.add('crashed-text');
+            document.getElementById('crashStatus').innerText = "Patladı! Bahsi kaybettin.";
+            document.getElementById('crashStatus').style.color = "#ff4757";
+            resetCrashUI();
         }
 
-        function handleEnter(e) {
-            if(e.key === 'Enter') sendMessage();
+        function resetCrashUI() {
+            isFlying = false;
+            const btn = document.getElementById('crashBtn');
+            btn.innerText = "BAHİS YAP";
+            btn.style.background = "#00E701";
+            document.getElementById('rocketIcon').style.bottom = '20px';
+            document.getElementById('rocketIcon').style.left = '20px';
+        }
+
+        // --- OYUN 3: SLOTS ---
+        const symbols = ['🍒', '🍋', '💎', '7️⃣', '🔔'];
+
+        function playSlots() {
+            const bet = parseFloat(document.getElementById('slotBet').value);
+            if(bet > balance) return alert("Yetersiz Bakiye!");
+            updateBalance(-bet);
+
+            const r1 = document.getElementById('reel1');
+            const r2 = document.getElementById('reel2');
+            const r3 = document.getElementById('reel3');
+            const status = document.getElementById('slotStatus');
+            
+            status.innerText = "Çevriliyor...";
+            
+            // Basit animasyon
+            let count = 0;
+            const interval = setInterval(() => {
+                r1.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                r2.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                r3.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                count++;
+                if(count > 10) {
+                    clearInterval(interval);
+                    checkSlotWin(bet);
+                }
+            }, 100);
+        }
+
+        function checkSlotWin(bet) {
+            const s1 = document.getElementById('reel1').innerText;
+            const s2 = document.getElementById('reel2').innerText;
+            const s3 = document.getElementById('reel3').innerText;
+            const status = document.getElementById('slotStatus');
+
+            if(s1 === s2 && s2 === s3) {
+                // Jackpot (Hepsi aynı)
+                const win = bet * 10;
+                updateBalance(win);
+                status.innerText = `JACKPOT! +${win}$`;
+                status.style.color = "#f1c40f";
+            } else if(s1 === s2 || s2 === s3 || s1 === s3) {
+                // 2 Tane aynı
+                const win = bet * 2;
+                updateBalance(win);
+                status.innerText = `Güzel! +${win}$`;
+                status.style.color = "#2ecc71";
+            } else {
+                status.innerText = "Kaybettin...";
+                status.style.color = "#ff4757";
+            }
         }
     </script>
-
 </body>
 </html>
